@@ -1,13 +1,13 @@
-package bg.softuni.serviceschedulercarbrandsandmodels;
+package bg.softuni.carBrandsAndModels;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ServiceSchedulerCarBrandsAndModelsApplication {
+public class CarBrandsAndModelsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ServiceSchedulerCarBrandsAndModelsApplication.class, args);
+        SpringApplication.run(CarBrandsAndModelsApplication.class, args);
     }
 
 }
