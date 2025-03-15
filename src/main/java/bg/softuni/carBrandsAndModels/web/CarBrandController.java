@@ -3,10 +3,10 @@ package bg.softuni.carBrandsAndModels.web;
 import bg.softuni.carBrandsAndModels.carBrands.service.CarBrandService;
 import bg.softuni.carBrandsAndModels.carBrands.service.dto.CarBrandDto;
 import bg.softuni.carBrandsAndModels.carBrands.service.dto.CarBrandListDto;
+import bg.softuni.carBrandsAndModels.carBrands.service.dto.SavedCarBrandDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
@@ -23,6 +23,20 @@ public class CarBrandController {
     @GetMapping("/all")
     public ResponseEntity<List<CarBrandDto>> getAll() {
         return ResponseEntity.ok(carBrandService.getAll());
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<SavedCarBrandDto> add(@RequestBody CarBrandDto carBrandDto) {
+        SavedCarBrandDto savedCarBrandDto = carBrandService.doAdd(carBrandDto);
+
+        return ResponseEntity
+                .created(
+                        ServletUriComponentsBuilder
+                                .fromCurrentRequest()
+                                .path("/{id}")
+                                .buildAndExpand(savedCarBrandDto.id())
+                                .toUri()
+                ).body(savedCarBrandDto);
     }
 
 }
