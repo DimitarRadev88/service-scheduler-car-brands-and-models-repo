@@ -1,4 +1,9 @@
 package bg.softuni.carBrandsAndModels.carBrands.service.dto;
 
-public record CarBrandDto(String name) {
+import jakarta.validation.constraints.NotBlank;
+
+public record CarBrandDto(
+        @NotBlank(message = "Brand name cannot be blank")
+        String name
+) {
 }

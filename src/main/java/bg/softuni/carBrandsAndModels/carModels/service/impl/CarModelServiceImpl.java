@@ -5,7 +5,8 @@ import bg.softuni.carBrandsAndModels.carBrands.model.CarBrand;
 import bg.softuni.carBrandsAndModels.carModels.dao.CarModelRepository;
 import bg.softuni.carBrandsAndModels.carModels.dto.CarModelAddDto;
 import bg.softuni.carBrandsAndModels.carModels.dto.CarModelDto;
-import bg.softuni.carBrandsAndModels.carModels.exception.BrandDoesNotExistException;
+import bg.softuni.carBrandsAndModels.carBrands.exceptions.BrandDoesNotExistException;
+import bg.softuni.carBrandsAndModels.carModels.exception.ModelAlreadyExistsException;
 import bg.softuni.carBrandsAndModels.carModels.model.CarModel;
 import bg.softuni.carBrandsAndModels.carModels.service.CarModelService;
 import bg.softuni.carBrandsAndModels.carModels.service.dto.SavedCarModelDto;
@@ -50,6 +51,10 @@ public class CarModelServiceImpl implements CarModelService {
         Optional<CarBrand> optionalBrand = carBrandRepository.findByName(carModelDto.brand());
         if (optionalBrand.isEmpty()) {
             throw new BrandDoesNotExistException("Car brand does not exist");
+        }
+
+        if (carModelRepository.existsCarModelByBrandNameAndName(carModelDto.brand(), carModelDto.model())) {
+            throw new ModelAlreadyExistsException("Car model already exists");
         }
 
         CarBrand carBrand = optionalBrand.get();

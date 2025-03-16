@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface CarModelRepository extends JpaRepository<CarModel, UUID> {
     List<CarModel> findAllByBrand_Name(String brandName);
+
+    boolean existsCarModelByBrandNameAndName(String brandName, String name);
 }
