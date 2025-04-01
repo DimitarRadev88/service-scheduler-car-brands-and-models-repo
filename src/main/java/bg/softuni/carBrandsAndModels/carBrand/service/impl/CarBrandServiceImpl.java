@@ -6,13 +6,13 @@ import bg.softuni.carBrandsAndModels.carBrand.model.CarBrand;
 import bg.softuni.carBrandsAndModels.carBrand.service.CarBrandService;
 import bg.softuni.carBrandsAndModels.carBrand.service.dto.CarBrandDto;
 import bg.softuni.carBrandsAndModels.carBrand.service.dto.SavedCarBrandDto;
+import bg.softuni.carBrandsAndModels.carBrand.exception.InvalidBrandNameException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -35,6 +35,10 @@ public class CarBrandServiceImpl implements CarBrandService {
 
     @Override
     public SavedCarBrandDto doAdd(CarBrandDto carBrandDto) {
+        if (carBrandDto.name() == null || carBrandDto.name().isBlank()) {
+            throw new InvalidBrandNameException("Invalid brand name!");
+        }
+
         if (carBrandRepository.existsCarBrandByName(carBrandDto.name())) {
             throw new BrandAlreadyExistsException("Car brand already exists in db");
         }

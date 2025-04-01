@@ -4,11 +4,8 @@ import bg.softuni.carBrandsAndModels.carModel.dto.CarModelAddDto;
 import bg.softuni.carBrandsAndModels.carModel.dto.CarModelDto;
 import bg.softuni.carBrandsAndModels.carModel.service.CarModelService;
 import bg.softuni.carBrandsAndModels.carModel.service.dto.SavedCarModelDto;
-import bg.softuni.carBrandsAndModels.web.exception.InvalidRequestBodyException;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -27,22 +24,11 @@ public class CarModelController {
 
     @GetMapping("/{brand}")
     public ResponseEntity<List<CarModelDto>> getAllByBrand(@PathVariable String brand) {
-        if (brand.isEmpty()) {
-            throw new InvalidRequestBodyException("Brand cannot be blank");
-        }
-
         return ResponseEntity.ok(carModelService.getAllByBrand(brand));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<SavedCarModelDto> addModel(
-            @RequestBody @Valid CarModelAddDto carModelDto,
-            BindingResult bindingResult
-    ) {
-
-        if (bindingResult.hasErrors()) {
-            throw new InvalidRequestBodyException("Missing information in request body");
-        }
+    public ResponseEntity<SavedCarModelDto> addModel(@RequestBody CarModelAddDto carModelDto) {
 
         SavedCarModelDto savedCarModelDto = carModelService.doAdd(carModelDto);
 

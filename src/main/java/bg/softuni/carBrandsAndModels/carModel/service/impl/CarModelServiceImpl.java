@@ -10,13 +10,14 @@ import bg.softuni.carBrandsAndModels.carModel.exception.ModelAlreadyExistsExcept
 import bg.softuni.carBrandsAndModels.carModel.model.CarModel;
 import bg.softuni.carBrandsAndModels.carModel.service.CarModelService;
 import bg.softuni.carBrandsAndModels.carModel.service.dto.SavedCarModelDto;
+import bg.softuni.carBrandsAndModels.carBrand.exception.InvalidBrandNameException;
+import bg.softuni.carBrandsAndModels.carModel.exception.InvalidModelNameException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -33,10 +34,7 @@ public class CarModelServiceImpl implements CarModelService {
 
     @Override
     public List<CarModelDto> getAllByBrand(String brand) {
-        if (!carBrandRepository.existsCarBrandByName(brand)) {
-            throw new BrandDoesNotExistException("Car brand does not exist");
-        }
-
+        validateBrand(brand);
 
         return carModelRepository
                 .findAllByBrand_Name(brand)
@@ -48,16 +46,10 @@ public class CarModelServiceImpl implements CarModelService {
     @Override
     @Transactional
     public SavedCarModelDto doAdd(CarModelAddDto carModelDto) {
-        Optional<CarBrand> optionalBrand = carBrandRepository.findByName(carModelDto.brand());
-        if (optionalBrand.isEmpty()) {
-            throw new BrandDoesNotExistException("Car brand does not exist");
-        }
+        validateBrand(carModelDto.brand());
+        validateModel(carModelDto);
 
-        if (carModelRepository.existsCarModelByBrandNameAndName(carModelDto.brand(), carModelDto.model())) {
-            throw new ModelAlreadyExistsException("Car model already exists");
-        }
-
-        CarBrand carBrand = optionalBrand.get();
+        CarBrand carBrand = carBrandRepository.findByName(carModelDto.brand()).get();
 
         CarModel carModel = new CarModel();
 
@@ -71,4 +63,25 @@ public class CarModelServiceImpl implements CarModelService {
 
         return new SavedCarModelDto(save.getId(), save.getBrand().getName(), save.getName());
     }
+
+    private void validateModel(CarModelAddDto carModelDto) {
+        if (carModelDto.model() == null || carModelDto.model().isBlank()) {
+            throw new InvalidModelNameException("Invalid model name");
+        }
+
+        if (carModelRepository.existsCarModelByBrandNameAndName(carModelDto.brand(), carModelDto.model())) {
+            throw new ModelAlreadyExistsException("Car model already exists");
+        }
+    }
+
+    private void validateBrand(String brand) {
+        if (brand == null || brand.isBlank()) {
+            throw new InvalidBrandNameException("Brand cannot be blank");
+        }
+
+        if (!carBrandRepository.existsCarBrandByName(brand)) {
+            throw new BrandDoesNotExistException("Car brand does not exist");
+        }
+    }
+
 }

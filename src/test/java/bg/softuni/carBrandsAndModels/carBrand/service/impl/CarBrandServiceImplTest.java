@@ -7,6 +7,7 @@ import bg.softuni.carBrandsAndModels.carBrand.service.CarBrandService;
 import bg.softuni.carBrandsAndModels.carBrand.service.dto.CarBrandDto;
 import bg.softuni.carBrandsAndModels.carBrand.service.dto.SavedCarBrandDto;
 import bg.softuni.carBrandsAndModels.carModel.model.CarModel;
+import bg.softuni.carBrandsAndModels.carBrand.exception.InvalidBrandNameException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,13 @@ public class CarBrandServiceImplTest {
 
         Assertions.assertEquals(brands.stream().map(this::mapToCarBrandDto).toList(), all);
 
+    }
+
+    @Test
+    public void testDoAddShouldThrowWhenCarBrandNameIsNotValid() {
+        CarBrandDto dto = new CarBrandDto(" ");
+
+        Assertions.assertThrows(InvalidBrandNameException.class, () -> carBrandService.doAdd(dto));
     }
 
     @Test

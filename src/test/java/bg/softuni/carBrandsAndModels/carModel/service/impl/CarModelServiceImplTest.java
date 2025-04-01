@@ -2,10 +2,12 @@ package bg.softuni.carBrandsAndModels.carModel.service.impl;
 
 import bg.softuni.carBrandsAndModels.carBrand.dao.CarBrandRepository;
 import bg.softuni.carBrandsAndModels.carBrand.exception.BrandDoesNotExistException;
+import bg.softuni.carBrandsAndModels.carBrand.exception.InvalidBrandNameException;
 import bg.softuni.carBrandsAndModels.carBrand.model.CarBrand;
 import bg.softuni.carBrandsAndModels.carModel.dao.CarModelRepository;
 import bg.softuni.carBrandsAndModels.carModel.dto.CarModelAddDto;
 import bg.softuni.carBrandsAndModels.carModel.dto.CarModelDto;
+import bg.softuni.carBrandsAndModels.carModel.exception.InvalidModelNameException;
 import bg.softuni.carBrandsAndModels.carModel.exception.ModelAlreadyExistsException;
 import bg.softuni.carBrandsAndModels.carModel.model.CarModel;
 import bg.softuni.carBrandsAndModels.carModel.service.CarModelService;
@@ -36,13 +38,13 @@ public class CarModelServiceImplTest {
     @Mock
     private CarModelRepository carModelRepository;
 
-    private CarModelService carModelServiceImpl;
+    private CarModelService carModelService;
     @Captor
     private ArgumentCaptor<CarModel> captor;
     @BeforeEach
     public void setUp() {
         captor = ArgumentCaptor.forClass(CarModel.class);
-        carModelServiceImpl = new CarModelServiceImpl(carModelRepository, carBrandRepository);
+        carModelService = new CarModelServiceImpl(carModelRepository, carBrandRepository);
     }
 
     @Test
@@ -51,7 +53,7 @@ public class CarModelServiceImplTest {
         when(carBrandRepository.existsCarBrandByName(brand))
                 .thenReturn(false);
 
-        Assertions.assertThrows(BrandDoesNotExistException.class, () -> carModelServiceImpl.getAllByBrand(brand));
+        Assertions.assertThrows(BrandDoesNotExistException.class, () -> carModelService.getAllByBrand(brand));
     }
 
     @Test
@@ -70,17 +72,35 @@ public class CarModelServiceImplTest {
 
         List<CarModelDto> expected = carModels.stream().map(CarModelServiceImplTest::mapToCarModelDto).toList();
 
-        Assertions.assertEquals(expected, carModelServiceImpl.getAllByBrand(carBrand.getName()));
+        Assertions.assertEquals(expected, carModelService.getAllByBrand(carBrand.getName()));
+    }
+
+    @Test
+    public void testDoAddThrowsWhenBrandIsEmpty() {
+        String brand = " ";
+
+        Assertions.assertThrows(InvalidBrandNameException.class, () -> carModelService.doAdd(new CarModelAddDto(brand, "model")));
+    }
+
+    @Test
+    public void testDoAddThrowsWhenBrandExistsAndModelIsEmpty() {
+        String brand = "Audi";
+        String model = " ";
+
+        when(carBrandRepository.existsCarBrandByName(brand))
+                .thenReturn(true);
+
+        Assertions.assertThrows(InvalidModelNameException.class, () -> carModelService.doAdd(new CarModelAddDto(brand, model)));
     }
 
     @Test
     public void testDoAddThrowsWhenBrandDoesNotExist() {
         String brand = "Audi";
 
-        when(carBrandRepository.findByName(brand))
-        .thenReturn(Optional.empty());
+        when(carBrandRepository.existsCarBrandByName(brand))
+        .thenReturn(false);
 
-        Assertions.assertThrows(BrandDoesNotExistException.class, () -> carModelServiceImpl.doAdd(new CarModelAddDto(brand, brand)));
+        Assertions.assertThrows(BrandDoesNotExistException.class, () -> carModelService.doAdd(new CarModelAddDto(brand, brand)));
     }
 
     @Test
@@ -90,12 +110,12 @@ public class CarModelServiceImplTest {
         carBrand.getModels().add(carModel);
         CarModelAddDto carModelDto = new CarModelAddDto(carBrand.getName(), carModel.getName());
 
-        when(carBrandRepository.findByName(carBrand.getName()))
-                .thenReturn(Optional.of(carBrand));
+        when(carBrandRepository.existsCarBrandByName(carBrand.getName()))
+                .thenReturn(true);
         when(carModelRepository.existsCarModelByBrandNameAndName(carBrand.getName(), carModel.getName()))
                 .thenReturn(true);
 
-        Assertions.assertThrows(ModelAlreadyExistsException.class, () -> carModelServiceImpl.doAdd(carModelDto));
+        Assertions.assertThrows(ModelAlreadyExistsException.class, () -> carModelService.doAdd(carModelDto));
     }
 
     @Test
@@ -105,6 +125,8 @@ public class CarModelServiceImplTest {
         carBrand.getModels().add(carModel);
         CarModelAddDto carModelDto = new CarModelAddDto(carBrand.getName(), carModel.getName());
 
+        when(carBrandRepository.existsCarBrandByName(carBrand.getName()))
+                .thenReturn(true);
         when(carBrandRepository.findByName(carBrand.getName()))
                 .thenReturn(Optional.of(carBrand));
         when(carModelRepository.existsCarModelByBrandNameAndName(carBrand.getName(), carModel.getName()))
@@ -112,7 +134,7 @@ public class CarModelServiceImplTest {
         when(carModelRepository.save(Mockito.any(CarModel.class)))
                 .thenReturn(carModel);
 
-        SavedCarModelDto savedCarModelDto = carModelServiceImpl.doAdd(carModelDto);
+        SavedCarModelDto savedCarModelDto = carModelService.doAdd(carModelDto);
 
         verify(carModelRepository).save(captor.capture());
 
