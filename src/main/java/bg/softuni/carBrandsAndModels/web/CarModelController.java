@@ -1,9 +1,9 @@
 package bg.softuni.carBrandsAndModels.web;
 
-import bg.softuni.carBrandsAndModels.carModels.dto.CarModelAddDto;
-import bg.softuni.carBrandsAndModels.carModels.dto.CarModelDto;
-import bg.softuni.carBrandsAndModels.carModels.service.CarModelService;
-import bg.softuni.carBrandsAndModels.carModels.service.dto.SavedCarModelDto;
+import bg.softuni.carBrandsAndModels.carModel.dto.CarModelAddDto;
+import bg.softuni.carBrandsAndModels.carModel.dto.CarModelDto;
+import bg.softuni.carBrandsAndModels.carModel.service.CarModelService;
+import bg.softuni.carBrandsAndModels.carModel.service.dto.SavedCarModelDto;
 import bg.softuni.carBrandsAndModels.web.exception.InvalidRequestBodyException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

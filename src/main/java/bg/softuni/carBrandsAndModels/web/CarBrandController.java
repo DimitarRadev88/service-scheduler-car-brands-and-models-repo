@@ -1,8 +1,8 @@
 package bg.softuni.carBrandsAndModels.web;
 
-import bg.softuni.carBrandsAndModels.carBrands.service.CarBrandService;
-import bg.softuni.carBrandsAndModels.carBrands.service.dto.CarBrandDto;
-import bg.softuni.carBrandsAndModels.carBrands.service.dto.SavedCarBrandDto;
+import bg.softuni.carBrandsAndModels.carBrand.service.CarBrandService;
+import bg.softuni.carBrandsAndModels.carBrand.service.dto.CarBrandDto;
+import bg.softuni.carBrandsAndModels.carBrand.service.dto.SavedCarBrandDto;
 import bg.softuni.carBrandsAndModels.web.exception.InvalidRequestBodyException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

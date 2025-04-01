@@ -1,8 +1,8 @@
 package bg.softuni.carBrandsAndModels.util;
 
-import bg.softuni.carBrandsAndModels.carBrands.dao.CarBrandRepository;
-import bg.softuni.carBrandsAndModels.carBrands.model.CarBrand;
-import bg.softuni.carBrandsAndModels.carModels.model.CarModel;
+import bg.softuni.carBrandsAndModels.carBrand.dao.CarBrandRepository;
+import bg.softuni.carBrandsAndModels.carBrand.model.CarBrand;
+import bg.softuni.carBrandsAndModels.carModel.model.CarModel;
 import bg.softuni.carBrandsAndModels.util.dto.BrandWithModel;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;

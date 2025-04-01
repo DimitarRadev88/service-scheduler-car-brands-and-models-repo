@@ -1,8 +1,8 @@
 package bg.softuni.carBrandsAndModels.web;
 
-import bg.softuni.carBrandsAndModels.carBrands.exceptions.BrandAlreadyExistsException;
-import bg.softuni.carBrandsAndModels.carBrands.exceptions.BrandDoesNotExistException;
-import bg.softuni.carBrandsAndModels.carModels.exception.ModelAlreadyExistsException;
+import bg.softuni.carBrandsAndModels.carBrand.exception.BrandAlreadyExistsException;
+import bg.softuni.carBrandsAndModels.carBrand.exception.BrandDoesNotExistException;
+import bg.softuni.carBrandsAndModels.carModel.exception.ModelAlreadyExistsException;
 import bg.softuni.carBrandsAndModels.web.exception.InvalidRequestBodyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +18,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BrandAlreadyExistsException.class)
-    public ResponseEntity<String> handleExists(BrandAlreadyExistsException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    public ResponseEntity<String> handleBrandExists(BrandAlreadyExistsException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
     }
 
     @ExceptionHandler(ModelAlreadyExistsException.class)
-    public ResponseEntity<String> handleExists(ModelAlreadyExistsException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    public ResponseEntity<String> handleModelExists(ModelAlreadyExistsException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
     }
 
     @ExceptionHandler(InvalidRequestBodyException.class)
