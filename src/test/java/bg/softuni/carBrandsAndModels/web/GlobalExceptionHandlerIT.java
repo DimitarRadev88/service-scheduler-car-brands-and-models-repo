@@ -1,6 +1,5 @@
 package bg.softuni.carBrandsAndModels.web;
 
-import bg.softuni.carBrandsAndModels.carModel.dto.CarModelAddDto;
 import bg.softuni.carBrandsAndModels.carModel.service.CarModelService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
